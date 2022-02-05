@@ -2,3 +2,8 @@
 *.zip
 data
 *.venv
+__pycache__
+wandb
+*.png
+*.jpg
+*.mp4
