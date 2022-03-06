@@ -62,7 +62,7 @@ def get_rays(height,width,focal,pose):
     camera_transform_matrix = pose[:3,:3]
     height_width_focal = pose[:3,-1]
 
-    transformed_directions = direction_unit_vectors[...,None,:] * camera_transform_matrix
+    transformed_directions = direction_unit_vectors[...,None,:] * camera_transform_matrix 
     ray_directions = torch.sum(transformed_directions,dim=-1)
     ray_origins = torch.broadcast_to(torch.from_numpy(height_width_focal),ray_directions.shape)
     return (ray_origins,ray_directions)
@@ -175,6 +175,36 @@ def get_rotation_theta(theta):
     ]
     return np.array(matrix, dtype=np.float32)
 
+def get_rotation_y(theta):
+    """Get the rotation matrix for movement in theta."""
+    matrix = [
+        [np.cos(theta), 0, np.sin(theta), 0],
+        [0, 1, 0, 0],
+        [-np.sin(theta), 0, np.cos(theta), 0],
+        [0, 0, 0, 1],
+    ]
+    return np.array(matrix, dtype=np.float32)
+
+
+def get_rotation_z(theta):
+    """Get the rotation matrix for movement in theta."""
+    matrix = [
+        [np.cos(theta),-np.sin(theta),0, 0],
+        [0, 1, 0, 0],
+        [np.sin(theta), np.cos(theta),0, 0],
+        [0, 0, 0, 1],
+    ]
+    return np.array(matrix, dtype=np.float32)
+
+def get_rotation_x(theta):
+    """Get the rotation matrix for movement in theta."""
+    matrix = [
+        [1,0,0, 0],
+        [0, np.cos(theta), -np.sin(theta), 0],
+        [0, np.sin(theta),np.cos(theta), 0],
+        [0, 0, 0, 1],
+    ]
+    return np.array(matrix, dtype=np.float32)
 
 def pose_spherical(theta, phi, t):
     """
@@ -182,7 +212,7 @@ def pose_spherical(theta, phi, t):
     and t.
     """
     c2w = get_translation_t(t)
-    c2w = get_rotation_phi(phi / 180.0 * np.pi) @ c2w
-    c2w = get_rotation_theta(theta / 180.0 * np.pi) @ c2w
+    # c2w = get_rotation_phi(phi / 180.0 * np.pi) @ c2w
+    c2w = get_rotation_y(theta / 180.0 * np.pi) @c2w
     c2w = np.array([[-1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]]) @ c2w
     return np.array(c2w,dtype=np.float32)

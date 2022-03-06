@@ -15,9 +15,9 @@ from data_pipeline import get_rgb_depth
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--n_epochs", type=int, default=1, help="number of epochs of training")
+parser.add_argument("--n_epochs", type=int, default=20, help="number of epochs of training")
 parser.add_argument("--batch_size", type=int, default=4, help="size of the batches")
-parser.add_argument("--lr", type=float, default=0.0001, help="adam: learning rate")
+parser.add_argument("--lr", type=float, default=0.001, help="adam: learning rate")
 parser.add_argument("--sample_interval", type=int, default=15, help="interval between image sampling")
 parser.add_argument("--log_interval", type=int, default=5, help="log every n batches")
 parser.add_argument("--pos_encode_dims", type=int,default=16, help="num fourier features per input dimension")
@@ -55,6 +55,7 @@ model = Base_Model(num_pos = H * W * opt.num_samples,pos_encode_dims=opt.pos_enc
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 model.to(device)
+
 summary(model,input_size=(opt.num_samples*H*W,opt.pos_encode_dims*2*3+3))
 optimizer = torch.optim.Adam(model.parameters(),lr=opt.lr)
 criterionMSE =torch.nn.MSELoss()

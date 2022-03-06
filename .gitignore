@@ -7,3 +7,6 @@ wandb
 *.png
 *.jpg
 *.mp4
+*.gif
+*.onnx
+*.pth
